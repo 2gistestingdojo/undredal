@@ -254,8 +254,7 @@ class SortTest(MyTest):
         for product in self.products():
             ids2.append(product.find_elements_by_class_name('TextBlock')[0].get_attribute('Name'))
 
-        for (a, b) in zip(ids[::-1], ids2):
-            self.assertEqual(a, b)
+        self.assertEqual(ids[::-1], ids2)
 
 class DeleteTest(MyTest):
     def test_delete(self):
