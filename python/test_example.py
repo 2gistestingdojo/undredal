@@ -41,7 +41,7 @@ class MyTest(BaseTestCase):
         return products_list.find_elements_by_class_name('ListViewItem')
 
     def get_nth_product(self, n):
-        return self.products()[n].find_elements_by_class_name('TextBlock')[0:3]
+        return self.products()[n].find_elements_by_class_name('TextBlock')[0:4]
 
     def add_product(self, name):
         res = self.show()
@@ -198,7 +198,7 @@ class EditTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        id, name, other = product_items[0].find_elements_by_class_name('TextBlock')
+        id, name,cat, other = product_items[0].find_elements_by_class_name('TextBlock')
 
         actions = ActionChains(self.driver)
 
@@ -213,10 +213,33 @@ class EditTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        id2, name2, other2 = product_items[0].find_elements_by_class_name('TextBlock')
+        id2, name2, cat2,other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
         self.assertEqual(name.get_attribute('Name') + '1', name2.get_attribute('Name'))
+
+    def test_edit_category(self):
+        id, name, cat, dele = self.get_nth_product(0)
+
+        actions = ActionChains(self.driver)
+
+        actions.move_to_element(self.products()[0])
+        actions.double_click()
+        actions.perform()
+
+        change_window = self.driver.find_element_by_id('ChangeProductWindow')
+
+        categories = change_window.find_element_by_id('CategoryCW')
+        categories.click()
+
+        # Элемент списка НАД save
+        change_window.find_element_by_id('SaveCW').click()
+
+        change_window.find_element_by_id('SaveCW').click()
+
+        id2, name2, cat2, dele2 = self.get_nth_product(0)
+
+        self.assertNotEqual(cat.get_attribute('Name'), cat2.get_attribute('Name'))
 
 class SortTest(MyTest):
     def test_reverse(self):
@@ -224,20 +247,20 @@ class SortTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        id, name, other = product_items[0].find_elements_by_class_name('TextBlock')
+        id, name, cat, other = product_items[0].find_elements_by_class_name('TextBlock')
 
         main_window.find_element_by_id('SortGroupBoxMW').find_element_by_id('SortDownMW').click()
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        id2, name2, other2 = product_items[0].find_elements_by_class_name('TextBlock')
+        id2, name2,cat2, other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertNotEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
 
     def test_keys_sensetive_sort(self):
         self.add_product('н')
 
-        id,name,other = self.get_nth_product(6)
+        id,name,cat,other = self.get_nth_product(6)
         self.assertEqual(name.get_attribute('Name'), 'н')
 
     def test_sort_equals(self):
@@ -262,7 +285,7 @@ class DeleteTest(MyTest):
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
         count1 = self.record_count()
-        id, name, dele = product_items[0].find_elements_by_class_name('TextBlock')
+        id, name,cat, dele = product_items[0].find_elements_by_class_name('TextBlock')
         dele.click()
         count2 = self.record_count()
         self.assertEqual(count1 - 1, count2)
