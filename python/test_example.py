@@ -303,5 +303,11 @@ class MultiplyDelete(MyTest):
 
         self.assertEqual(count1 - 2, count2)
 
+class Test(MyTest):
+    def test_duplicate(self):
+        self.add_product('9')
+
+        check_records_count(self.driver, self.assertEqual, '9', 1)
+
 if __name__ == '__main__':
     unittest.main()
