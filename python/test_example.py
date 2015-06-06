@@ -1,4 +1,5 @@
-﻿from base_test_case import BaseTestCase
+﻿from selenium.webdriver import ActionChains
+from base_test_case import BaseTestCase
 import unittest
 
 def check_records_count(driver, ass, value, num):
@@ -30,6 +31,7 @@ class MyTest(BaseTestCase):
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
         return len(product_items)
+
 
 class IdTest(MyTest):
     def test_find_all_ids(self):
@@ -118,6 +120,7 @@ class AddTest(MyTest):
         res.find_element_by_id('AddAW').click()
 
         self.assertEqual(count + 1, self.record_count())
+
     def test_add_name(self):
         count = self.record_count()
 
@@ -128,6 +131,7 @@ class AddTest(MyTest):
         res.find_element_by_id('AddAW').click()
 
         check_records_count(self.driver, self.assertEqual, 'Test2', 1)
+
     def test_add_id(self):
         count = self.record_count()
 
@@ -138,6 +142,7 @@ class AddTest(MyTest):
         res.find_element_by_id('AddAW').click()
 
         check_records_count(self.driver, self.assertEqual, count+1, 1)
+
     def test_add_same_name(self):
         count = self.record_count()
 
@@ -152,6 +157,46 @@ class AddTest(MyTest):
         res.find_element_by_id('AddAW').click()
 
         self.assertEqual(count + 2, self.record_count())
+
+    # def test_long(self):
+    #     long_text = 'T' * 9
+    #
+    #     res = self.show()
+    #     text = res.find_element_by_id('NameAW')
+    #     text.send_keys(long_text)
+    #     res.find_element_by_id('AddAW').click()
+    #
+    #     main_window = self.driver.find_element_by_id('MainWindow')
+    #
+    #     products_list = main_window.find_element_by_id('ProductsMW')
+    #     product_items = products_list.find_elements_by_class_name('ListViewItem')
+    #     self.assertEqual(product_items[-1].find_elements_by_class_name('TextBlock')[1], long_text)
+
+class EditTest(MyTest):
+    def test_edit1(self):
+        main_window = self.driver.find_element_by_id('MainWindow')
+
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        id, name = product_items[0].find_elements_by_class_name('TextBlock')
+
+        actions = ActionChains(self.driver)
+
+        actions.move_to_element(name)
+        actions.double_click()
+        actions.perform()
+
+        change_window = self.driver.find_element_by_id('ChangeProductWindow')
+        text = change_window.find_element_by_id('NameCW')
+        text.send_keys(text.text + '1')
+        change_window.find_element_by_id('SaveCW').click()
+
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        id2, name2 = product_items[0].find_elements_by_class_name('TextBlock')
+
+        self.assertEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
+        self.assertEqual(name.get_attribute('Name') + '1', name2.get_attribute('Name'))
 
 # class ExampleTest(BaseTestCase):
 #      def test_example(self):
