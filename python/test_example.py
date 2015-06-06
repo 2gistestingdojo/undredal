@@ -224,13 +224,13 @@ class SortTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        (id, name), other = product_items[0].find_elements_by_class_name('TextBlock')
+        (id, name), *other = product_items[0].find_elements_by_class_name('TextBlock')
 
         main_window.find_element_by_id('SortGroupBoxMW').find_element_by_id('SortDownMW').click()
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        (id2, name2), other2 = product_items[0].find_elements_by_class_name('TextBlock')
+        (id2, name2), *other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertNotEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
 
@@ -241,7 +241,21 @@ class SortTest(MyTest):
         self.assertEqual(name.get_attribute('Name'), 'н')
 
     def test_sort_equals(self):
-        pass
+        self.add_product('Test')
+        self.add_product('Test')
+
+        ids = []
+        for product in self.products():
+            ids.append(product.find_elements_by_class_name('TextBlock')[0].get_attribute('Name'))
+
+        self.main_window().find_element_by_id('SortGroupBoxMW').find_element_by_id('SortDownMW').click()
+
+        ids2 = []
+        for product in self.products():
+            ids2.append(product.find_elements_by_class_name('TextBlock')[0].get_attribute('Name'))
+
+        for (a, b) in zip(ids[::-1], ids2):
+            self.assertEqual(a, b)
 
 class DeleteTest(MyTest):
     def test_delete(self):
