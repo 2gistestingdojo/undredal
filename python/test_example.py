@@ -2,6 +2,10 @@
 from base_test_case import BaseTestCase
 import unittest
 
+ID = 0
+NAME = 1
+DEL = 2
+
 def check_records_count(driver, ass, value, num):
     main_window = driver.find_element_by_id('MainWindow')
 
@@ -32,6 +36,21 @@ class MyTest(BaseTestCase):
         product_items = products_list.find_elements_by_class_name('ListViewItem')
         return len(product_items)
 
+    def main_window(self):
+        return self.driver.find_element_by_id('MainWindow')
+
+    def products(self):
+        products_list = self.main_window().find_element_by_id('ProductsMW')
+        return products_list.find_elements_by_class_name('ListViewItem')
+
+    def get_nth_product(self, n):
+        return self.products()[n].find_elements_by_class_name('TextBlock')
+
+    def add_product(self, name):
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys(name)
+        res.find_element_by_id('AddAW').click()
 
 class IdTest(MyTest):
     def test_find_all_ids(self):
@@ -214,6 +233,12 @@ class SortTest(MyTest):
         (id2, name2), other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertNotEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
+
+    def test_keys_sensetive_sort(self):
+        self.add_product('н')
+
+        (id,name,other) = self.get_nth_product(6)
+        self.assertEqual(name.get_attribute('Name'), 'н')
 
 class DeleteTest(MyTest):
     def test_delete(self):
