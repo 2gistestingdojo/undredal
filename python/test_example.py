@@ -198,7 +198,7 @@ class EditTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        (id, name), other = product_items[0].find_elements_by_class_name('TextBlock')
+        id, name, other = product_items[0].find_elements_by_class_name('TextBlock')
 
         actions = ActionChains(self.driver)
 
@@ -213,7 +213,7 @@ class EditTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        (id2, name2), other2 = product_items[0].find_elements_by_class_name('TextBlock')
+        id2, name2, other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
         self.assertEqual(name.get_attribute('Name') + '1', name2.get_attribute('Name'))
@@ -224,20 +224,20 @@ class SortTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        (id, name), *other = product_items[0].find_elements_by_class_name('TextBlock')
+        id, name, other = product_items[0].find_elements_by_class_name('TextBlock')
 
         main_window.find_element_by_id('SortGroupBoxMW').find_element_by_id('SortDownMW').click()
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        (id2, name2), *other2 = product_items[0].find_elements_by_class_name('TextBlock')
+        id2, name2, other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertNotEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
 
     def test_keys_sensetive_sort(self):
         self.add_product('н')
 
-        (id,name,other) = self.get_nth_product(6)
+        id,name,other = self.get_nth_product(6)
         self.assertEqual(name.get_attribute('Name'), 'н')
 
     def test_sort_equals(self):
@@ -263,7 +263,7 @@ class DeleteTest(MyTest):
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
         count1 = self.record_count()
-        (id, name, dele) = product_items[0].find_elements_by_class_name('TextBlock')
+        id, name, dele = product_items[0].find_elements_by_class_name('TextBlock')
         dele.click()
         count2 = self.record_count()
         self.assertEqual(count1 - 1, count2)
