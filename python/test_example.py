@@ -1,10 +1,7 @@
 ﻿from selenium.webdriver import ActionChains
+from selenium.webdriver.common.keys import Keys
 from base_test_case import BaseTestCase
 import unittest
-
-ID = 0
-NAME = 1
-DEL = 2
 
 def check_records_count(driver, ass, value, num):
     main_window = driver.find_element_by_id('MainWindow')
@@ -44,13 +41,16 @@ class MyTest(BaseTestCase):
         return products_list.find_elements_by_class_name('ListViewItem')
 
     def get_nth_product(self, n):
-        return self.products()[n].find_elements_by_class_name('TextBlock')
+        return self.products()[n].find_elements_by_class_name('TextBlock')[0:3]
 
     def add_product(self, name):
         res = self.show()
         text = res.find_element_by_id('NameAW')
         text.send_keys(name)
         res.find_element_by_id('AddAW').click()
+
+    def delete_all(self):
+        self.main_window().find_element_by_id('DeleteSelectedMW').click()
 
 class IdTest(MyTest):
     def test_find_all_ids(self):
@@ -240,6 +240,9 @@ class SortTest(MyTest):
         (id,name,other) = self.get_nth_product(6)
         self.assertEqual(name.get_attribute('Name'), 'н')
 
+    def test_sort_equals(self):
+        pass
+
 class DeleteTest(MyTest):
     def test_delete(self):
         main_window = self.driver.find_element_by_id('MainWindow')
@@ -251,6 +254,18 @@ class DeleteTest(MyTest):
         count2 = self.record_count()
         self.assertEqual(count1 - 1, count2)
 
+class MultiplyDelete(MyTest):
+    def test_remove_last(self):
+        count1 = self.record_count()
+
+        self.products()[0].click()
+
+        self.driver.execute_script('input: ctrl_click', self.products()[1])
+        self.delete_all()
+
+        count2 = self.record_count()
+
+        self.assertEqual(count1 - 2, count2)
 
 if __name__ == '__main__':
     unittest.main()
