@@ -37,6 +37,7 @@ class IdTest(MyTest):
     def test_find_all_ids(self):
         for i in range(1, self.record_count() + 1):
             check_records_count(self.driver, self.assertGreaterEqual, i, 1)
+
     def test_find_not_found(self):
         check_records_count(self.driver, self.assertEqual, 99999999, 0)
 
@@ -170,7 +171,7 @@ class AddTest(MyTest):
     #
     #     products_list = main_window.find_element_by_id('ProductsMW')
     #     product_items = products_list.find_elements_by_class_name('ListViewItem')
-    #     self.assertEqual(product_items[-1].find_elements_by_class_name('TextBlock')[1], long_text)
+    #     self.assertEqual(product_items[-1].find_elements_by_class_name('TextBlock')[1].get_attribute('Name'), long_text)
 
 class EditTest(MyTest):
     def test_edit1(self):
@@ -178,7 +179,7 @@ class EditTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        id, name = product_items[0].find_elements_by_class_name('TextBlock')
+        (id, name), other = product_items[0].find_elements_by_class_name('TextBlock')
 
         actions = ActionChains(self.driver)
 
@@ -193,10 +194,26 @@ class EditTest(MyTest):
 
         products_list = main_window.find_element_by_id('ProductsMW')
         product_items = products_list.find_elements_by_class_name('ListViewItem')
-        id2, name2 = product_items[0].find_elements_by_class_name('TextBlock')
+        (id2, name2), other2 = product_items[0].find_elements_by_class_name('TextBlock')
 
         self.assertEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
         self.assertEqual(name.get_attribute('Name') + '1', name2.get_attribute('Name'))
+
+class SortTest(MyTest):
+    def test_reverse(self):
+        main_window = self.driver.find_element_by_id('MainWindow')
+
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        (id, name), other = product_items[0].find_elements_by_class_name('TextBlock')
+
+        main_window.find_element_by_id('SortGroupBoxMW').find_element_by_id('SortDownMW').click()
+
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        (id2, name2), other2 = product_items[0].find_elements_by_class_name('TextBlock')
+
+        self.assertNotEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
 
 # class ExampleTest(BaseTestCase):
 #      def test_example(self):
