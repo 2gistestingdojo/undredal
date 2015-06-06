@@ -98,16 +98,14 @@ class LowerTest(BaseTestCase):
     def test_find_sony(self):
         check_records_count(self.driver, self.assertEqual, 'sony', 1)
 
-class LowerTest(BaseTestCase):
-    def test_find_sony(self):
-        check_records_count(self.driver, self.assertEqual, 'sony', 1)
-
 class CancelTest(MyTest):
     def test_cancel(self):
+        count = self.record_count()
+
         res = self.show()
         res.find_element_by_id('CancelAW').click()
 
-        check_records_count(self.driver, self.assertEqual, '', 8)
+        check_records_count(self.driver, self.assertEqual, '', count)
 
 # class ExampleTest(BaseTestCase):
 #      def test_example(self):
