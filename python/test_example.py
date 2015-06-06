@@ -15,9 +15,18 @@ def check_records_count(driver, ass, value, num):
 
     ass(len(product_items), num)
 
+class MyTest(BaseTestCase):
+    def show(self):
+        main_window = self.driver.find_element_by_id('MainWindow')
+
+        add_button = main_window.find_element_by_id('AddNewProductMW')
+        add_button.click()
+
+        return self.driver.find_element_by_id('AddNewProductWindow')
+
 class IdTest(BaseTestCase):
     def test_find_1(self):
-        check_records_count(self.driver, self.assertEqual, 1, 1)
+        check_records_count(self.driver, self.assertEqual, 1, 2)
     def test_find_2(self):
         check_records_count(self.driver, self.assertEqual, 2, 1)
     def test_find_3(self):
@@ -51,7 +60,7 @@ class NameTest(BaseTestCase):
     def test_find_mm(self):
         check_records_count(self.driver, self.assertEqual, 'Мышь Microsoft', 1)
     def test_find_tc(self):
-        check_records_count(self.driver, self.assertEqual, 'Телефон Cisco', 1)
+        check_records_count(self.driver, self.assertEqual, 'Телефон C1sko', 1)
     def test_find_not_found(self):
         check_records_count(self.driver, self.assertEqual, 'Мой клёвый продукт', 0)
 
@@ -83,9 +92,28 @@ class VendorTest(BaseTestCase):
     def test_find_l(self):
         check_records_count(self.driver, self.assertEqual, 'Logitec', 1)
     def test_find_c(self):
-        check_records_count(self.driver, self.assertEqual, 'Cisco', 1)
+        check_records_count(self.driver, self.assertEqual, 'C1sko', 1)
     def test_find_not_found(self):
         check_records_count(self.driver, self.assertEqual, 'Мой клёвый продукт', 0)
+
+class UpperTest(BaseTestCase):
+    def test_find_sony(self):
+        check_records_count(self.driver, self.assertEqual, 'SONY', 1)
+
+class LowerTest(BaseTestCase):
+    def test_find_sony(self):
+        check_records_count(self.driver, self.assertEqual, 'sony', 1)
+
+class LowerTest(BaseTestCase):
+    def test_find_sony(self):
+        check_records_count(self.driver, self.assertEqual, 'sony', 1)
+
+class CancelTest(MyTest):
+    def test_cancel(self):
+        res = self.show()
+        res.find_element_by_id('CancelAW').click()
+
+        check_records_count(self.driver, self.assertEqual, '', 8)
 
 # class ExampleTest(BaseTestCase):
 #      def test_example(self):
