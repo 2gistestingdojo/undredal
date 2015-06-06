@@ -107,6 +107,52 @@ class CancelTest(MyTest):
 
         check_records_count(self.driver, self.assertEqual, '', count)
 
+class AddTest(MyTest):
+    def test_add_total_count(self):
+        count = self.record_count()
+
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys('Test1')
+
+        res.find_element_by_id('AddAW').click()
+
+        self.assertEqual(count + 1, self.record_count())
+    def test_add_name(self):
+        count = self.record_count()
+
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys('Test2')
+
+        res.find_element_by_id('AddAW').click()
+
+        check_records_count(self.driver, self.assertEqual, 'Test2', 1)
+    def test_add_id(self):
+        count = self.record_count()
+
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys('Test3')
+
+        res.find_element_by_id('AddAW').click()
+
+        check_records_count(self.driver, self.assertEqual, count+1, 1)
+    def test_add_same_name(self):
+        count = self.record_count()
+
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys('Test4')
+        res.find_element_by_id('AddAW').click()
+
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys('Test4')
+        res.find_element_by_id('AddAW').click()
+
+        self.assertEqual(count + 2, self.record_count())
+
 # class ExampleTest(BaseTestCase):
 #      def test_example(self):
 #          main_window = self.driver.find_element_by_id('MainWindow')
