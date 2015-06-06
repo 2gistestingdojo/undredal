@@ -159,19 +159,19 @@ class AddTest(MyTest):
 
         self.assertEqual(count + 2, self.record_count())
 
-    # def test_long(self):
-    #     long_text = 'T' * 9
-    #
-    #     res = self.show()
-    #     text = res.find_element_by_id('NameAW')
-    #     text.send_keys(long_text)
-    #     res.find_element_by_id('AddAW').click()
-    #
-    #     main_window = self.driver.find_element_by_id('MainWindow')
-    #
-    #     products_list = main_window.find_element_by_id('ProductsMW')
-    #     product_items = products_list.find_elements_by_class_name('ListViewItem')
-    #     self.assertEqual(product_items[-1].find_elements_by_class_name('TextBlock')[1].get_attribute('Name'), long_text)
+    def test_long(self):
+        long_text = '_' * 999
+
+        res = self.show()
+        text = res.find_element_by_id('NameAW')
+        text.send_keys(long_text)
+        res.find_element_by_id('AddAW').click()
+
+        main_window = self.driver.find_element_by_id('MainWindow')
+
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        self.assertEqual(product_items[0].find_elements_by_class_name('TextBlock')[1].get_attribute('Name'), long_text)
 
 class EditTest(MyTest):
     def test_edit1(self):
@@ -215,20 +215,16 @@ class SortTest(MyTest):
 
         self.assertNotEqual(id.get_attribute('Name'), id2.get_attribute('Name'))
 
-# class ExampleTest(BaseTestCase):
-#      def test_example(self):
-#          main_window = self.driver.find_element_by_id('MainWindow')
-#
-#          search_string = main_window.find_element_by_id('QueryMW')
-#          search_string.send_keys('3')
-#
-#          search_button = main_window.find_element_by_id('SearchMW')
-#          search_button.click()
-#
-#          products_list = main_window.find_element_by_id('ProductsMW')
-#          product_items = products_list.find_elements_by_class_name('ListViewItem')
-#
-#          self.assertEqual(len(product_items), 1)
+class DeleteTest(MyTest):
+    def test_delete(self):
+        main_window = self.driver.find_element_by_id('MainWindow')
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        count1 = self.record_count()
+        (id, name, dele) = product_items[0].find_elements_by_class_name('TextBlock')
+        dele.click()
+        count2 = self.record_count()
+        self.assertEqual(count1 - 1, count2)
 
 
 if __name__ == '__main__':
