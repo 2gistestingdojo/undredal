@@ -24,25 +24,19 @@ class MyTest(BaseTestCase):
 
         return self.driver.find_element_by_id('AddNewProductWindow')
 
-class IdTest(BaseTestCase):
-    def test_find_1(self):
-        check_records_count(self.driver, self.assertEqual, 1, 2)
-    def test_find_2(self):
-        check_records_count(self.driver, self.assertEqual, 2, 1)
-    def test_find_3(self):
-        check_records_count(self.driver, self.assertEqual, 3, 1)
-    def test_find_4(self):
-        check_records_count(self.driver, self.assertEqual, 4, 1)
-    def test_find_5(self):
-        check_records_count(self.driver, self.assertEqual, 5, 1)
-    def test_find_6(self):
-        check_records_count(self.driver, self.assertEqual, 6, 1)
-    def test_find_7(self):
-        check_records_count(self.driver, self.assertEqual, 7, 1)
-    def test_find_8(self):
-        check_records_count(self.driver, self.assertEqual, 8, 1)
-    def test_find_9(self):
-        check_records_count(self.driver, self.assertEqual, 9, 0)
+    def record_count(self):
+        main_window = self.driver.find_element_by_id('MainWindow')
+
+        products_list = main_window.find_element_by_id('ProductsMW')
+        product_items = products_list.find_elements_by_class_name('ListViewItem')
+        return len(product_items)
+
+class IdTest(MyTest):
+    def test_find_all_ids(self):
+        for i in range(1, self.record_count() + 1):
+            check_records_count(self.driver, self.assertGreaterEqual, i, 1)
+    def test_find_not_found(self):
+        check_records_count(self.driver, self.assertEqual, 99999999, 0)
 
 class NameTest(BaseTestCase):
     def test_find_ms(self):
